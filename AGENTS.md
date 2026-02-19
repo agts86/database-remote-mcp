@@ -43,23 +43,16 @@ NestJS + Fastify + MCP SDK によるリモートDB（SQL Server / PostgreSQL / M
 ```
 src/
 ├── domain/           # 純粋なTS型・インターフェースのみ。外部依存禁止、NestJSデコレータ禁止
-│   ├── rdbms/
-│   └── nosql/
 ├── application/      # ビジネスロジック。@Injectable()必須。Domain依存、Infrastructure注入
-│   ├── rdbms/
-│   │   └── mcp/
-│   │       ├── mcp.service.ts        # ツールオーケストレーター
-│   │       ├── handlers/             # JSON-RPCメソッドハンドラー
-│   │       └── tools/                # MCPツール実装 (11個)
-│   └── nosql/
-│       └── mcp/
+│   └── mcp/
+│       ├── mcp.service.ts        # ツールオーケストレーター
+│       ├── handlers/             # JSON-RPCメソッドハンドラー
+│       └── tools/                # MCPツール実装 (11個)
 ├── infrastructure/   # 外部システム連携。Domainインターフェースを実装
 │   ├── config/                   # AppConfigProvider (環境変数管理)
-│   ├── rdbms/adapters/           # DatabaseAdapterFactory + 各DBアダプター
-│   └── nosql/adapters/
+│   └── database/adapters/        # DatabaseAdapterFactory + 各DBアダプター
 └── presentation/     # HTTPエンドポイント。Application層呼び出しのみ
-    ├── controllers/rdbms/mcp/    # MCPコントローラー (/mcp/rdbms, /mcp/rdbms/stream)
-    ├── controllers/nosql/mcp/    # MCPコントローラー (/mcp/nosql, /mcp/nosql/stream)
+    ├── controllers/mcp/          # MCPコントローラー (/mcp, /mcp/stream)
     └── interceptors/             # SSEインターセプター
 ```
 
@@ -79,8 +72,8 @@ Factory + Strategy パターン。`IDatabaseAdapter` インターフェースを
 
 ### MCPエンドポイント
 
-- `/mcp/rdbms` — 標準HTTP MCP (JSON-RPC)
-- `/mcp/rdbms/stream` — Streamable HTTP (MCP SDK StreamableHTTPServerTransport)
+- `/mcp` — 標準HTTP MCP (JSON-RPC)
+- `/mcp/stream` — Streamable HTTP (MCP SDK StreamableHTTPServerTransport)
 
 ## Coding Conventions
 

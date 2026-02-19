@@ -44,12 +44,12 @@
 
 ```typescript
 // Domain層での型定義例
-// src/domain/rdbms/mcp/tool-response.interface.ts
+// src/domain/mcp/tool-response.interface.ts
 export interface ToolResponse {
   content: Array<ToolContent>;
 }
 
-// src/domain/rdbms/database/database-adapter.interface.ts
+// src/domain/database/database-adapter.interface.ts
 export interface IDatabaseAdapter {
   init(): Promise<void>;
   all(sql: string, params: unknown[]): Promise<QueryResultRow[]>;
@@ -61,7 +61,7 @@ export interface IDatabaseAdapter {
 }
 
 // Application層での拡張型定義例
-// src/application/rdbms/mcp/tools/read-query.tool.ts
+// src/application/mcp/tools/read-query.tool.ts
 export interface ReadQueryArguments {
   query: string;
 }
@@ -70,7 +70,7 @@ export interface ReadQueryArguments {
 - **基本型**: `src/domain/` に配置
 - **API入出力型**: Application層のサービスファイル内で定義
 - **HTTP特化型**: Presentation層で定義
-- **外部API型**: Domain層の該当機能フォルダに配置（例：`src/domain/rdbms/mcp/`）
+- **外部API型**: Domain層の該当機能フォルダに配置（例：`src/domain/mcp/`）
 
 ### ❌ やってはいけないこと
 
@@ -84,13 +84,13 @@ export interface ReadQueryArguments {
 
 ```typescript
 // 正しいインターフェース定義
-// src/domain/rdbms/mcp/tools/tool.interface.ts
+// src/domain/mcp/tools/tool.interface.ts
 export interface McpTool<Input = unknown, Output = unknown> {
   readonly name: string;
   execute(input: Input): Promise<Output>;
 }
 
-// src/domain/rdbms/mcp/tools/tool-definition.interface.ts
+// src/domain/mcp/tools/tool-definition.interface.ts
 export interface McpToolWithDefinition<
   Input = unknown,
   Output = unknown,
@@ -122,7 +122,7 @@ export interface McpMethodHandler<Params = unknown, Response = unknown> {
 
 ```typescript
 // 明示的な戻り値型指定
-// src/application/rdbms/mcp/mcp.service.ts
+// src/application/mcp/mcp.service.ts
 async executeToolByName(
   toolName: string,
   input: Record<string, unknown>
@@ -158,7 +158,7 @@ private createMethodNotFoundError(
 
 ```typescript
 // 基底型の拡張で共通性確保
-// src/domain/rdbms/mcp/tools/database-tools.interface.ts
+// src/domain/mcp/tools/database-tools.interface.ts
 export interface ReadQueryArguments {
   query: string;
 }
@@ -200,7 +200,7 @@ export interface McpResponse<T = unknown> {
 
 ```typescript
 // Domain層: インターフェース定義
-// src/domain/rdbms/database/database-adapter.interface.ts
+// src/domain/database/database-adapter.interface.ts
 export interface IDatabaseAdapter {
   init(): Promise<void>;
   all(sql: string, params: unknown[]): Promise<QueryResultRow[]>;
@@ -212,7 +212,7 @@ export interface IDatabaseAdapter {
 }
 
 // Infrastructure層: インターフェース実装
-// src/infrastructure/rdbms/adapters/sqlserver-adapter.ts
+// src/infrastructure/database/adapters/sqlserver-adapter.ts
 @Injectable()
 export class SqlServerAdapter implements IDatabaseAdapter {
   constructor(private readonly config: SqlServerConnectionConfig) {}
@@ -223,7 +223,7 @@ export class SqlServerAdapter implements IDatabaseAdapter {
 }
 
 // Application層: サービス実装
-// src/application/rdbms/mcp/tools/read-query.tool.ts
+// src/application/mcp/tools/read-query.tool.ts
 @Injectable()
 export class ReadQueryTool implements McpToolWithDefinition<
   ReadQueryArguments,
@@ -250,7 +250,7 @@ export class ReadQueryTool implements McpToolWithDefinition<
 
 ```typescript
 // データベースツールでのエラーハンドリング例
-// src/application/rdbms/mcp/tools/read-query.tool.ts
+// src/application/mcp/tools/read-query.tool.ts
 async execute(args: ReadQueryArguments): Promise<ToolResponse> {
   try {
     const connectionConfig = this.appConfigProvider.getDefaultDatabaseConfig();
@@ -300,7 +300,7 @@ async execute(args: ReadQueryArguments): Promise<ToolResponse> {
 
 ```typescript
 // .js拡張子でのインポート（ESM準拠）
-// src/application/rdbms/mcp/mcp.service.ts
+// src/application/mcp/mcp.service.ts
 import { Injectable } from '@nestjs/common';
 import { ReadQueryTool } from './tools/read-query.tool.js';
 import { WriteQueryTool } from './tools/write-query.tool.js';
@@ -308,8 +308,8 @@ import { ExportQueryTool } from './tools/export-query.tool.js';
 import { ListTablesTool } from './tools/list-tables.tool.js';
 
 // インターフェースはtypeインポートを使用
-import type { McpToolWithDefinition } from '../../../domain/rdbms/mcp/tools/tool-definition.interface.js';
-import type { ToolResponse } from '../../../domain/rdbms/mcp/tool-response.interface.js';
+import type { McpToolWithDefinition } from '../../domain/mcp/tools/tool-definition.interface.js';
+import type { ToolResponse } from '../../domain/mcp/tool-response.interface.js';
 ```
 
 - ファイル拡張子は`.ts`だがインポート時は`.js`
@@ -347,7 +347,7 @@ import type { ToolResponse } from '../../../domain/rdbms/mcp/tool-response.inter
 
 ```typescript
 // ✅ 良い例：複雑度が低く、早期リターンを使用
-// src/application/rdbms/mcp/mcp.service.ts
+// src/application/mcp/mcp.service.ts
 async executeToolByName(toolName: string, params: unknown): Promise<ToolResponse> {
   if (!toolName) {
     throw new Error('Tool name is required');
@@ -476,7 +476,7 @@ switch (toolName) {
   // 4つ以上で自動提案
 }
 
-// ✅ 実際の実装パターン（src/application/rdbms/mcp/mcp.service.ts）
+// ✅ 実際の実装パターン（src/application/mcp/mcp.service.ts）
 private getToolByName(toolName: string): McpToolWithDefinition | undefined {
   const tools = [
     this.readQueryTool,

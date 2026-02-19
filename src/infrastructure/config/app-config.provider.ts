@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { DatabaseConnectionConfig } from '../../domain/rdbms/database/database-connection.interface.js';
-import { DatabaseAdapterFactory } from '../rdbms/adapters/database-adapter-factory.js';
+import type { DatabaseConnectionConfig } from '../../domain/database/database-connection.interface.js';
+import { DatabaseAdapterFactory } from '../database/adapters/database-adapter-factory.js';
 
 /**
  * アプリケーション設定プロバイダー

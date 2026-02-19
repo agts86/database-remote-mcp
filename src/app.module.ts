@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { McpModule } from './presentation/controllers/rdbms/mcp/mcp.controller.module.js';
+import { McpModule } from './presentation/controllers/mcp/mcp.controller.module.js';
 
 /**
  * アプリケーションのルートモジュール

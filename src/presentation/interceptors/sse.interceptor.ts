@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { McpService } from '../../application/rdbms/mcp/mcp.service.js';
+import { McpService } from '../../application/mcp/mcp.service.js';
 
 /**
  * SSE (Server-Sent Events) インターセプター

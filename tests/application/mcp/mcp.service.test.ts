@@ -1,17 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { McpService } from '../../../src/application/rdbms/mcp/mcp.service';
+import { McpService } from '../../../src/application/mcp/mcp.service';
 import { AppConfigProvider } from '../../../src/infrastructure/config/app-config.provider';
-import { ReadQueryTool } from '../../../src/application/rdbms/mcp/tools/read-query.tool';
-import { WriteQueryTool } from '../../../src/application/rdbms/mcp/tools/write-query.tool';
-import { ExportQueryTool } from '../../../src/application/rdbms/mcp/tools/export-query.tool';
-import { ListTablesTool } from '../../../src/application/rdbms/mcp/tools/list-tables.tool';
-import { DescribeTableTool } from '../../../src/application/rdbms/mcp/tools/describe-table.tool';
-import { GetSchemaTool } from '../../../src/application/rdbms/mcp/tools/get-schema.tool';
-import { CreateTableTool } from '../../../src/application/rdbms/mcp/tools/create-table.tool';
-import { AlterTableTool } from '../../../src/application/rdbms/mcp/tools/alter-table.tool';
-import { DropTableTool } from '../../../src/application/rdbms/mcp/tools/drop-table.tool';
-import { ListInsightsTool } from '../../../src/application/rdbms/mcp/tools/list-insights.tool';
-import { AppendInsightTool } from '../../../src/application/rdbms/mcp/tools/append-insight.tool';
+import { ReadQueryTool } from '../../../src/application/mcp/tools/read-query.tool';
+import { WriteQueryTool } from '../../../src/application/mcp/tools/write-query.tool';
+import { ExportQueryTool } from '../../../src/application/mcp/tools/export-query.tool';
+import { ListTablesTool } from '../../../src/application/mcp/tools/list-tables.tool';
+import { DescribeTableTool } from '../../../src/application/mcp/tools/describe-table.tool';
+import { GetSchemaTool } from '../../../src/application/mcp/tools/get-schema.tool';
+import { CreateTableTool } from '../../../src/application/mcp/tools/create-table.tool';
+import { AlterTableTool } from '../../../src/application/mcp/tools/alter-table.tool';
+import { DropTableTool } from '../../../src/application/mcp/tools/drop-table.tool';
+import { ListInsightsTool } from '../../../src/application/mcp/tools/list-insights.tool';
+import { AppendInsightTool } from '../../../src/application/mcp/tools/append-insight.tool';
 
 describe('McpService', () => {
   let service: McpService;
