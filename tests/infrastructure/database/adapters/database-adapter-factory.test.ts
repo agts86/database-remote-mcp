@@ -1,5 +1,5 @@
-import { DatabaseAdapterFactory } from '../../../../src/infrastructure/database/adapters/database-adapter-factory';
-import type { DatabaseConnectionConfig } from '../../../../src/domain/database/database-connection.interface';
+import { DatabaseAdapterFactory } from '../../../../src/infrastructure/rdbms/adapters/database-adapter-factory';
+import type { DatabaseConnectionConfig } from '../../../../src/domain/rdbms/database/database-connection.interface';
 
 // 外部DB接続をモック
 jest.mock('mssql', () => ({}));

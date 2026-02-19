@@ -183,7 +183,7 @@ ENABLED_TOOLS=         # 有効化するMCPツール（カンマ区切り、未�
                        # 例: ENABLED_TOOLS=read_query,list_tables,describe_table
 
 # データベース接続設定（DB_TYPEで切り替え）
-DB_TYPE=sqlserver      # 接続先DB種別: sqlserver / postgres / mysql（デフォルト: sqlserver）
+DB_TYPE=postgres       # 接続先DB種別: sqlserver / postgres / mysql（デフォルト: postgres）
 SERVER=localhost       # サーバー名（postgres/mysqlではhostとして利用）
 PORT=1433              # ポート番号（DB_TYPEごとに既定値あり）
 DATABASE=master        # データベース名（DB_TYPEごとに既定値あり）

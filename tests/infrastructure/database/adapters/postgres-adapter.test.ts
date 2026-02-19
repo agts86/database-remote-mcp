@@ -1,5 +1,5 @@
-import { PostgresAdapter } from '../../../../src/infrastructure/database/adapters/postgres-adapter';
-import type { PostgresConnectionConfig } from '../../../../src/domain/database/database-connection.interface';
+import { PostgresAdapter } from '../../../../src/infrastructure/rdbms/adapters/postgres-adapter';
+import type { PostgresConnectionConfig } from '../../../../src/domain/rdbms/database/database-connection.interface';
 
 // pgモジュールをモック
 jest.mock('pg', () => {

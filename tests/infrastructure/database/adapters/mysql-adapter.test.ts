@@ -1,5 +1,5 @@
-import { MysqlAdapter } from '../../../../src/infrastructure/database/adapters/mysql-adapter';
-import type { MysqlConnectionConfig } from '../../../../src/domain/database/database-connection.interface';
+import { MysqlAdapter } from '../../../../src/infrastructure/rdbms/adapters/mysql-adapter';
+import type { MysqlConnectionConfig } from '../../../../src/domain/rdbms/database/database-connection.interface';
 
 // mysql2/promiseモジュールをモック
 jest.mock('mysql2/promise', () => {

@@ -1,10 +1,10 @@
-import { ExportQueryTool } from '../../../../src/application/mcp/tools/export-query.tool';
-import { DatabaseAdapterFactory } from '../../../../src/infrastructure/database/adapters/database-adapter-factory';
+import { ExportQueryTool } from '../../../../src/application/rdbms/mcp/tools/export-query.tool';
+import { DatabaseAdapterFactory } from '../../../../src/infrastructure/rdbms/adapters/database-adapter-factory';
 import { AppConfigProvider } from '../../../../src/infrastructure/config/app-config.provider';
 
 // DatabaseAdapterFactoryを完全にモック
 jest.mock(
-  '../../../../src/infrastructure/database/adapters/database-adapter-factory',
+  '../../../../src/infrastructure/rdbms/adapters/database-adapter-factory',
 );
 
 const MockedDatabaseAdapterFactory = DatabaseAdapterFactory as jest.MockedClass<
