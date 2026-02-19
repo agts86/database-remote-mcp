@@ -17,9 +17,28 @@ export interface SqlServerConnectionConfig extends BaseConnectionConfig {
 }
 
 /**
+ * PostgreSQL データベース接続設定
+ */
+export interface PostgresConnectionConfig extends BaseConnectionConfig {
+  type: 'postgres';
+  host: string;
+}
+
+/**
+ * MySQL データベース接続設定
+ */
+export interface MysqlConnectionConfig extends BaseConnectionConfig {
+  type: 'mysql';
+  host: string;
+}
+
+/**
  * データベース接続設定の統合型
  */
-export type DatabaseConnectionConfig = SqlServerConnectionConfig;
+export type DatabaseConnectionConfig =
+  | SqlServerConnectionConfig
+  | PostgresConnectionConfig
+  | MysqlConnectionConfig;
 
 /**
  * データベースメタデータ

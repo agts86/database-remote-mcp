@@ -24,6 +24,8 @@
 - `@fastify/swagger`: Fastify用Swaggerプラグイン
 - `@fastify/swagger-ui`: Swagger UI統合
 - `mssql`: SQL Server データベースドライバー
+- `pg`: PostgreSQL データベースドライバー
+- `mysql2`: MySQL データベースドライバー
 - `typescript`: TypeScript コンパイラ
 - `jest`: テストフレームワーク
 
@@ -159,8 +161,9 @@ docker run -p 3000:3000 --env-file .env database-remote-mcp:latest
 
 ## データベース対応状況
 
-- **SQL Server**: 完全対応（mssqlドライバー使用）
-- **その他のデータベース**: 将来拡張予定（アダプターパターンで実装済み）
+- **SQL Server**: 対応済み（`mssql` ドライバー）
+- **PostgreSQL**: 対応済み（`pg` ドライバー）
+- **MySQL**: 対応済み（`mysql2` ドライバー）
 
 ## 設定
 
@@ -179,13 +182,20 @@ ENABLED_TOOLS=         # 有効化するMCPツール（カンマ区切り、未�
                        # append_insight, list_insights
                        # 例: ENABLED_TOOLS=read_query,list_tables,describe_table
 
-# データベース接続設定（SQL Server固定）
-SERVER=localhost//OBPM  # サーバー名（デフォルト: localhost//OBPM）
-PORT=1433              # ポート番号（デフォルト: 1433）
-DATABASE=OBPMDATA      # データベース名（デフォルト: OBPMDATA）
-USER=sa                # ユーザー名（デフォルト: sa）
-PASSWORD=              # パスワード（必須）
+# データベース接続設定（DB_TYPEで切り替え）
+DB_TYPE=sqlserver      # 接続先DB種別: sqlserver / postgres / mysql（デフォルト: sqlserver）
+SERVER=localhost       # サーバー名（postgres/mysqlではhostとして利用）
+PORT=1433              # ポート番号（DB_TYPEごとに既定値あり）
+DATABASE=master        # データベース名（DB_TYPEごとに既定値あり）
+USER=sa                # ユーザー名（DB_TYPEごとに既定値あり）
+PASSWORD=              # パスワード（デフォルト: 空文字）
 ```
+
+`DB_TYPE` ごとの既定値:
+
+- `sqlserver`: `PORT=1433`, `DATABASE=master`, `USER=sa`
+- `postgres`: `PORT=5432`, `DATABASE=postgres`, `USER=postgres`
+- `mysql`: `PORT=3306`, `DATABASE=mysql`, `USER=root`
 
 ## テスト
 

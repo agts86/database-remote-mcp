@@ -22,6 +22,8 @@ describe('ListTablesTool', () => {
       init: jest.fn(),
       all: jest.fn(),
       close: jest.fn(),
+      getListTablesQuery: jest.fn().mockReturnValue('SELECT table_name FROM mock_tables'),
+      getDescribeTableQuery: jest.fn().mockReturnValue('SELECT * FROM mock_describe'),
     };
 
     // DatabaseAdapterFactory.createのモック設定
@@ -97,6 +99,29 @@ describe('ListTablesTool', () => {
 
       expect(result).toHaveProperty('content');
       expect(result.content[0]).toHaveProperty('text');
+      expect(result.content[0].text).toContain('Tables:');
+    });
+
+    it('PostgreSQLタイプでテーブル一覧を取得する', async () => {
+      mockAppConfigProvider.getDefaultDatabaseConfig.mockReturnValue({
+        type: 'postgres',
+        host: 'localhost',
+        database: 'testdb',
+      });
+
+      const mockTables = [
+        { table_name: 'users' },
+        { table_name: 'orders' },
+      ];
+      mockDatabaseAdapter.all.mockResolvedValue(mockTables);
+
+      const result = await tool.execute({});
+
+      expect(mockDatabaseAdapter.getListTablesQuery).toHaveBeenCalled();
+      expect(mockDatabaseAdapter.all).toHaveBeenCalledWith(
+        'SELECT table_name FROM mock_tables',
+        [],
+      );
       expect(result.content[0].text).toContain('Tables:');
     });
   });

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import type { DatabaseConnectionConfig } from '../../domain/database/database-connection.interface.js';
+import { DatabaseAdapterFactory } from '../database/adapters/database-adapter-factory.js';
 
 /**
  * アプリケーション設定プロバイダー
@@ -24,21 +26,24 @@ export class AppConfigProvider {
     return tools ? tools.split(',').map((t) => t.trim()) : [];
   }
   /** デフォルトのデータベース接続設定を取得 */
-  getDefaultDatabaseConfig(): {
-    type: 'sqlserver';
-    server: string;
-    port: number;
-    database: string;
-    user: string;
-    password: string;
-  } {
-    return {
-      type: 'sqlserver' as const,
-      server: this.configService.get<string>('SERVER', 'localhost//OBPM'),
-      port: Number(this.configService.get('PORT', 1433)),
-      database: this.configService.get<string>('DATABASE', 'OBPMDATA'),
-      user: this.configService.get<string>('USER', 'sa'),
-      password: this.configService.get<string>('PASSWORD', ''),
-    };
+  getDefaultDatabaseConfig(): DatabaseConnectionConfig {
+    const dbType = this.configService.get<string>('DB_TYPE', 'sqlserver');
+
+    return DatabaseAdapterFactory.resolveConfig(dbType, {
+      server: this.configService.get<string>('SERVER'),
+      port: this.getOptionalNumber('PORT'),
+      database: this.configService.get<string>('DATABASE'),
+      user: this.configService.get<string>('USER'),
+      password: this.configService.get<string>('PASSWORD'),
+    });
+  }
+
+  /** 環境変数を数値として取得（未設定時はundefined） */
+  private getOptionalNumber(key: string): number | undefined {
+    const value = this.configService.get<string>(key);
+    if (value === undefined || value === '') {
+      return undefined;
+    }
+    return Number(value);
   }
 }

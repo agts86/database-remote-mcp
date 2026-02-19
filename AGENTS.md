@@ -1,8 +1,13 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (including OpenAI Codex) when working with code in this repository.
 
-@docs/
+## Additional Documentation
+
+詳細な設計原則・コーディング規約は以下のドキュメントも参照すること:
+
+- `docs/instructions.md` — 設計原則・コーディング規約指示書
+- `docs/ESLINT.md` — ESLint設定説明
 
 ## Language
 

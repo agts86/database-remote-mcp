@@ -256,9 +256,9 @@ export class McpService {
         prompts: false,
       },
       endpoints: {
-        tools: '/obpm/tools',
-        listTools: '/obpm/tools',
-        invokeTool: '/obpm/tools/{toolName}',
+        tools: '/mcp/tools',
+        listTools: '/mcp/tools',
+        invokeTool: '/mcp/tools/{toolName}',
       },
     };
   }

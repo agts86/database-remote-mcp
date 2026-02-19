@@ -45,7 +45,7 @@ export class ListTablesTool implements McpToolWithDefinition<
       const adapter = DatabaseAdapterFactory.create(connectionConfig);
       await adapter.init();
 
-      const query = this.getListTablesQuery(connectionConfig.type);
+      const query = adapter.getListTablesQuery();
       const results = await adapter.all(query, []);
 
       await adapter.close();
@@ -70,36 +70,4 @@ export class ListTablesTool implements McpToolWithDefinition<
     }
   }
 
-  /**
-   * データベースタイプに応じたテーブル一覧取得クエリを取得します
-   * @param type データベースタイプ
-   * @returns テーブル一覧取得クエリ
-   */
-  private getListTablesQuery(type: string): string {
-    const queryStrategies = this.getQueryStrategies();
-    const strategy = queryStrategies.find((s) => s.supports(type));
-
-    if (!strategy) {
-      throw new Error(`Unsupported database type: ${type}`);
-    }
-
-    return strategy.getQuery();
-  }
-
-  /**
-   * データベースタイプ別のクエリ戦略を取得します
-   * @returns クエリ戦略の配列
-   */
-  private getQueryStrategies(): Array<{
-    supports: (type: string) => boolean;
-    getQuery: () => string;
-  }> {
-    return [
-      {
-        supports: (type: string) => type === 'sqlserver',
-        getQuery: () =>
-          "SELECT table_name FROM information_schema.tables WHERE table_type='BASE TABLE';",
-      },
-    ];
-  }
 }

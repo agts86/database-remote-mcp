@@ -51,4 +51,15 @@ export interface IDatabaseAdapter {
    * データベース メタデータを取得
    */
   getMetadata(): { name: string; type: string; [key: string]: unknown };
+
+  /**
+   * テーブル一覧取得用のDB固有クエリを取得
+   */
+  getListTablesQuery(): string;
+
+  /**
+   * 指定したテーブルの構造説明用のDB固有クエリを取得
+   * @param tableName テーブル名
+   */
+  getDescribeTableQuery(tableName: string): string;
 }

@@ -51,10 +51,7 @@ export class DescribeTableTool implements McpToolWithDefinition<
       const adapter = DatabaseAdapterFactory.create(connectionConfig);
       await adapter.init();
 
-      const query = this.getDescribeTableQuery(
-        connectionConfig.type,
-        args.table_name,
-      );
+      const query = adapter.getDescribeTableQuery(args.table_name);
       // パラメータとしてテーブル名を渡す（SQLインジェクション対策）
       const results = await adapter.all(query, [args.table_name]);
 
@@ -80,55 +77,4 @@ export class DescribeTableTool implements McpToolWithDefinition<
     }
   }
 
-  /**
-   * データベースタイプに応じたテーブル記述クエリを取得します
-   * @param type データベースタイプ
-   * @param tableName テーブル名
-   * @returns テーブル記述クエリ
-   */
-  private getDescribeTableQuery(type: string, tableName: string): string {
-    const queryStrategies = this.getQueryStrategies(tableName);
-    const strategy = queryStrategies.find((s) => s.supports(type));
-
-    if (!strategy) {
-      throw new Error(`Unsupported database type: ${type}`);
-    }
-
-    return strategy.getQuery();
-  }
-
-  /**
-   * テーブル名に基づいたデータベースタイプ別のクエリ戦略を取得します
-   * @param tableName テーブル名
-   * @returns クエリ戦略の配列
-   */
-  private getQueryStrategies(
-    tableName: string,
-  ): Array<{ supports: (type: string) => boolean; getQuery: () => string }> {
-    return [
-      {
-        supports: (type: string) => type === 'sqlserver',
-        // DECLARE + パラメータ化（DROP TABLEと同じアプローチ）
-        getQuery: () => `
-          DECLARE @tableName NVARCHAR(128) = ?;
-          SELECT 
-            c.COLUMN_NAME as name,
-            c.DATA_TYPE as type,
-            CASE WHEN c.IS_NULLABLE = 'YES' THEN 0 ELSE 1 END as notnull,
-            CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN 1 ELSE 0 END as pk,
-            c.COLUMN_DEFAULT as dflt_value
-          FROM 
-            INFORMATION_SCHEMA.COLUMNS c
-          LEFT JOIN 
-            INFORMATION_SCHEMA.KEY_COLUMN_USAGE kcu ON c.TABLE_NAME = kcu.TABLE_NAME AND c.COLUMN_NAME = kcu.COLUMN_NAME
-          LEFT JOIN 
-            INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc ON kcu.CONSTRAINT_NAME = tc.CONSTRAINT_NAME AND tc.CONSTRAINT_TYPE = 'PRIMARY KEY'
-          WHERE 
-            c.TABLE_NAME = @tableName
-          ORDER BY 
-            c.ORDINAL_POSITION
-        `,
-      },
-    ];
-  }
 }
