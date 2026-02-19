@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { McpService } from '../../../src/application/mcp/mcp.service';
+import { RdbmsRuntimeService } from '../../../src/application/mcp/rdbms/runtime.service';
 import { AppConfigProvider } from '../../../src/infrastructure/config/app-config.provider';
-import { ReadQueryTool } from '../../../src/application/mcp/tools/read-query.tool';
-import { WriteQueryTool } from '../../../src/application/mcp/tools/write-query.tool';
-import { ExportQueryTool } from '../../../src/application/mcp/tools/export-query.tool';
-import { ListTablesTool } from '../../../src/application/mcp/tools/list-tables.tool';
-import { DescribeTableTool } from '../../../src/application/mcp/tools/describe-table.tool';
-import { GetSchemaTool } from '../../../src/application/mcp/tools/get-schema.tool';
-import { CreateTableTool } from '../../../src/application/mcp/tools/create-table.tool';
-import { AlterTableTool } from '../../../src/application/mcp/tools/alter-table.tool';
-import { DropTableTool } from '../../../src/application/mcp/tools/drop-table.tool';
-import { ListInsightsTool } from '../../../src/application/mcp/tools/list-insights.tool';
-import { AppendInsightTool } from '../../../src/application/mcp/tools/append-insight.tool';
+import { ReadQueryTool } from '../../../src/application/mcp/rdbms/tools/read-query.tool';
+import { WriteQueryTool } from '../../../src/application/mcp/rdbms/tools/write-query.tool';
+import { ExportQueryTool } from '../../../src/application/mcp/rdbms/tools/export-query.tool';
+import { ListTablesTool } from '../../../src/application/mcp/rdbms/tools/list-tables.tool';
+import { DescribeTableTool } from '../../../src/application/mcp/rdbms/tools/describe-table.tool';
+import { GetSchemaTool } from '../../../src/application/mcp/rdbms/tools/get-schema.tool';
+import { CreateTableTool } from '../../../src/application/mcp/rdbms/tools/create-table.tool';
+import { AlterTableTool } from '../../../src/application/mcp/rdbms/tools/alter-table.tool';
+import { DropTableTool } from '../../../src/application/mcp/rdbms/tools/drop-table.tool';
+import { ListInsightsTool } from '../../../src/application/mcp/rdbms/tools/list-insights.tool';
+import { AppendInsightTool } from '../../../src/application/mcp/rdbms/tools/append-insight.tool';
 
-describe('McpService - ツールフィルタリング機能', () => {
+describe('RdbmsRuntimeService - ツールフィルタリング機能', () => {
   let mockReadQueryTool: jest.Mocked<ReadQueryTool>;
   let mockWriteQueryTool: jest.Mocked<WriteQueryTool>;
   let mockExportQueryTool: jest.Mocked<ExportQueryTool>;
@@ -131,7 +131,7 @@ describe('McpService - ツールフィルタリング機能', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        McpService,
+        RdbmsRuntimeService,
         { provide: AppConfigProvider, useValue: mockAppConfigProvider },
         { provide: ReadQueryTool, useValue: mockReadQueryTool },
         { provide: WriteQueryTool, useValue: mockWriteQueryTool },
@@ -147,7 +147,7 @@ describe('McpService - ツールフィルタリング機能', () => {
       ],
     }).compile();
 
-    const service = module.get<McpService>(McpService);
+    const service = module.get<RdbmsRuntimeService>(RdbmsRuntimeService);
     const definitions = service.getHttpToolsDefinition();
 
     expect(definitions).toHaveLength(11);
@@ -160,7 +160,7 @@ describe('McpService - ツールフィルタリング機能', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        McpService,
+        RdbmsRuntimeService,
         { provide: AppConfigProvider, useValue: limitedConfigProvider },
         { provide: ReadQueryTool, useValue: mockReadQueryTool },
         { provide: WriteQueryTool, useValue: mockWriteQueryTool },
@@ -176,7 +176,7 @@ describe('McpService - ツールフィルタリング機能', () => {
       ],
     }).compile();
 
-    const service = module.get<McpService>(McpService);
+    const service = module.get<RdbmsRuntimeService>(RdbmsRuntimeService);
     const definitions = service.getHttpToolsDefinition();
 
     expect(definitions).toHaveLength(3);
@@ -194,7 +194,7 @@ describe('McpService - ツールフィルタリング機能', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        McpService,
+        RdbmsRuntimeService,
         { provide: AppConfigProvider, useValue: configWithInvalidTool },
         { provide: ReadQueryTool, useValue: mockReadQueryTool },
         { provide: WriteQueryTool, useValue: mockWriteQueryTool },
@@ -210,7 +210,7 @@ describe('McpService - ツールフィルタリング機能', () => {
       ],
     }).compile();
 
-    const service = module.get<McpService>(McpService);
+    const service = module.get<RdbmsRuntimeService>(RdbmsRuntimeService);
     const definitions = service.getHttpToolsDefinition();
 
     // invalid_tool は無視され、read_query と list_tables のみ有効化
@@ -228,7 +228,7 @@ describe('McpService - ツールフィルタリング機能', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        McpService,
+        RdbmsRuntimeService,
         { provide: AppConfigProvider, useValue: limitedConfigProvider },
         { provide: ReadQueryTool, useValue: mockReadQueryTool },
         { provide: WriteQueryTool, useValue: mockWriteQueryTool },
@@ -244,7 +244,7 @@ describe('McpService - ツールフィルタリング機能', () => {
       ],
     }).compile();
 
-    const service = module.get<McpService>(McpService);
+    const service = module.get<RdbmsRuntimeService>(RdbmsRuntimeService);
 
     // read_query は有効化されているので実行可能
     mockReadQueryTool.execute.mockResolvedValue({

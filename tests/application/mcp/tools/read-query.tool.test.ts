@@ -1,14 +1,14 @@
-import { ReadQueryTool } from '../../../../src/application/mcp/tools/read-query.tool';
-import { DatabaseAdapterFactory } from '../../../../src/infrastructure/database/adapters/database-adapter-factory';
+import { ReadQueryTool } from '../../../../src/application/mcp/rdbms/tools/read-query.tool';
+import { RdbmsAdapterFactory } from '../../../../src/infrastructure/rdbms/adapters/rdbms-adapter-factory';
 import { AppConfigProvider } from '../../../../src/infrastructure/config/app-config.provider';
 
-// DatabaseAdapterFactoryを完全にモック
+// RdbmsAdapterFactoryを完全にモック
 jest.mock(
-  '../../../../src/infrastructure/database/adapters/database-adapter-factory',
+  '../../../../src/infrastructure/rdbms/adapters/rdbms-adapter-factory',
 );
 
-const MockedDatabaseAdapterFactory = DatabaseAdapterFactory as jest.MockedClass<
-  typeof DatabaseAdapterFactory
+const MockedRdbmsAdapterFactory = RdbmsAdapterFactory as jest.MockedClass<
+  typeof RdbmsAdapterFactory
 >;
 
 describe('ReadQueryTool', () => {
@@ -24,8 +24,8 @@ describe('ReadQueryTool', () => {
       close: jest.fn(),
     };
 
-    // DatabaseAdapterFactory.createのモック設定
-    MockedDatabaseAdapterFactory.create = jest
+    // RdbmsAdapterFactory.createのモック設定
+    MockedRdbmsAdapterFactory.create = jest
       .fn()
       .mockReturnValue(mockDatabaseAdapter);
 

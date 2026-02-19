@@ -1,5 +1,5 @@
-import { DatabaseAdapterFactory } from '../../../../src/infrastructure/database/adapters/database-adapter-factory';
-import type { DatabaseConnectionConfig } from '../../../../src/domain/database/database-connection.interface';
+import { RdbmsAdapterFactory } from '../../../../src/infrastructure/rdbms/adapters/rdbms-adapter-factory';
+import type { DatabaseConnectionConfig } from '../../../../src/domain/rdbms/rdbms-connection.interface';
 
 // 外部DB接続をモック
 jest.mock('mssql', () => ({}));
@@ -14,7 +14,7 @@ jest.mock('mysql2/promise', () => ({
   createPool: jest.fn(),
 }));
 
-describe('DatabaseAdapterFactory', () => {
+describe('RdbmsAdapterFactory', () => {
   describe('create', () => {
     it('sqlserverタイプでSqlServerAdapterを作成する', () => {
       const config: DatabaseConnectionConfig = {
@@ -23,7 +23,7 @@ describe('DatabaseAdapterFactory', () => {
         database: 'testdb',
       };
 
-      const adapter = DatabaseAdapterFactory.create(config);
+      const adapter = RdbmsAdapterFactory.create(config);
       expect(adapter).toBeDefined();
       expect(adapter.getMetadata().type).toBe('sqlserver');
     });
@@ -35,7 +35,7 @@ describe('DatabaseAdapterFactory', () => {
         database: 'testdb',
       };
 
-      const adapter = DatabaseAdapterFactory.create(config);
+      const adapter = RdbmsAdapterFactory.create(config);
       expect(adapter).toBeDefined();
       expect(adapter.getMetadata().type).toBe('postgres');
     });
@@ -47,7 +47,7 @@ describe('DatabaseAdapterFactory', () => {
         database: 'testdb',
       };
 
-      const adapter = DatabaseAdapterFactory.create(config);
+      const adapter = RdbmsAdapterFactory.create(config);
       expect(adapter).toBeDefined();
       expect(adapter.getMetadata().type).toBe('mysql');
     });
@@ -58,7 +58,7 @@ describe('DatabaseAdapterFactory', () => {
         database: 'testdb',
       } as unknown as DatabaseConnectionConfig;
 
-      expect(() => DatabaseAdapterFactory.create(config)).toThrow(
+      expect(() => RdbmsAdapterFactory.create(config)).toThrow(
         'Unsupported database type',
       );
     });
@@ -66,7 +66,7 @@ describe('DatabaseAdapterFactory', () => {
 
   describe('resolveConfig', () => {
     it('sqlserverのデフォルト値を適用する', () => {
-      const config = DatabaseAdapterFactory.resolveConfig('sqlserver', {});
+      const config = RdbmsAdapterFactory.resolveConfig('sqlserver', {});
       expect(config).toEqual({
         type: 'sqlserver',
         server: 'localhost',
@@ -78,7 +78,7 @@ describe('DatabaseAdapterFactory', () => {
     });
 
     it('postgresのデフォルト値を適用する', () => {
-      const config = DatabaseAdapterFactory.resolveConfig('postgres', {});
+      const config = RdbmsAdapterFactory.resolveConfig('postgres', {});
       expect(config).toEqual({
         type: 'postgres',
         host: 'localhost',
@@ -90,7 +90,7 @@ describe('DatabaseAdapterFactory', () => {
     });
 
     it('mysqlのデフォルト値を適用する', () => {
-      const config = DatabaseAdapterFactory.resolveConfig('mysql', {});
+      const config = RdbmsAdapterFactory.resolveConfig('mysql', {});
       expect(config).toEqual({
         type: 'mysql',
         host: 'localhost',
@@ -102,7 +102,7 @@ describe('DatabaseAdapterFactory', () => {
     });
 
     it('環境変数の値でデフォルト値を上書きする', () => {
-      const config = DatabaseAdapterFactory.resolveConfig('postgres', {
+      const config = RdbmsAdapterFactory.resolveConfig('postgres', {
         server: 'db.example.com',
         port: 5433,
         database: 'myapp',
@@ -120,7 +120,7 @@ describe('DatabaseAdapterFactory', () => {
     });
 
     it('postgresでSSL設定を適用する', () => {
-      const config = DatabaseAdapterFactory.resolveConfig('postgres', {
+      const config = RdbmsAdapterFactory.resolveConfig('postgres', {
         ssl: true,
       });
       expect(config).toEqual({
@@ -135,7 +135,7 @@ describe('DatabaseAdapterFactory', () => {
     });
 
     it('mysqlでSSL設定を適用する', () => {
-      const config = DatabaseAdapterFactory.resolveConfig('mysql', {
+      const config = RdbmsAdapterFactory.resolveConfig('mysql', {
         ssl: true,
       });
       expect(config).toEqual({
@@ -151,7 +151,7 @@ describe('DatabaseAdapterFactory', () => {
 
     it('サポートされていないタイプでエラーをスローする', () => {
       expect(() =>
-        DatabaseAdapterFactory.resolveConfig('unsupported', {}),
+        RdbmsAdapterFactory.resolveConfig('unsupported', {}),
       ).toThrow('Unsupported database type');
     });
   });

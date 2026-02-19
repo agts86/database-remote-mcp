@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { McpController } from '../../../src/presentation/controllers/mcp/mcp.controller';
+import { McpController } from '../../../src/presentation/mcp/mcp.controller';
 import { McpService } from '../../../src/application/mcp/mcp.service';
 
 describe('McpController', () => {

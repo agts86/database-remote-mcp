@@ -101,4 +101,44 @@ describe('AppConfigProvider', () => {
       );
     });
   });
+
+  describe('getDefaultNoSqlConfig', () => {
+    it('mongodb設定を解決できる', () => {
+      const provider = createProvider({
+        DB_TYPE: 'mongodb',
+        MONGO_URI: 'mongodb://mongo.example.com:27017',
+        MONGO_DATABASE: 'appdb',
+      });
+
+      expect(provider.getDefaultNoSqlConfig()).toEqual({
+        type: 'mongodb',
+        uri: 'mongodb://mongo.example.com:27017',
+        database: 'appdb',
+      });
+    });
+
+    it('MONGO_URI未設定時はSERVER/PORTから組み立てる', () => {
+      const provider = createProvider({
+        DB_TYPE: 'mongodb',
+        SERVER: 'localhost',
+        PORT: '27018',
+      });
+
+      expect(provider.getDefaultNoSqlConfig()).toEqual({
+        type: 'mongodb',
+        uri: 'mongodb://localhost:27018',
+        database: 'admin',
+      });
+    });
+
+    it('DB_TYPEがmongodb以外の場合はNoSQL設定解決でエラーを投げる', () => {
+      const provider = createProvider({
+        DB_TYPE: 'postgres',
+      });
+
+      expect(() => provider.getDefaultNoSqlConfig()).toThrow(
+        'Unsupported NoSQL type',
+      );
+    });
+  });
 });

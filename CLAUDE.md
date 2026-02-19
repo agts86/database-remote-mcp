@@ -31,24 +31,32 @@ pnpm format:check     # Prettier確認
 
 ## Architecture
 
-NestJS + Fastify + MCP SDK によるリモートDB（SQL Server / PostgreSQL / MySQL）アクセスMCPサーバー。
+NestJS + Fastify + MCP SDK によるリモートDB（SQL Server / PostgreSQL / MySQL / MongoDB）アクセスMCPサーバー。
 
 ### レイヤー構成（依存方向: Presentation → Application → Domain ← Infrastructure）
 
 ```
 src/
 ├── domain/           # 純粋なTS型・インターフェースのみ。外部依存禁止、NestJSデコレータ禁止
-├── application/      # ビジネスロジック。@Injectable()必須。Domain依存、Infrastructure注入
+│   ├── mcp/
+│   │   ├── shared/   # MCP共通のメッセージ/レスポンス/ツール定義
+│   │   ├── rdbms/    # RDBMS向けMCPツール入出力型
+│   │   └── nosql/    # NoSQL向けMCPツール入出力型
+│   ├── rdbms/        # MCP非依存のRDBMS契約
+│   └── nosql/        # MCP非依存のNoSQL契約
+├── application/
 │   └── mcp/
-│       ├── mcp.service.ts        # ツールオーケストレーター
-│       ├── handlers/             # JSON-RPCメソッドハンドラー
-│       └── tools/                # MCPツール実装 (11個)
-├── infrastructure/   # 外部システム連携。Domainインターフェースを実装
-│   ├── config/                   # AppConfigProvider (環境変数管理)
-│   └── database/adapters/        # DatabaseAdapterFactory + 各DBアダプター
-└── presentation/     # HTTPエンドポイント。Application層呼び出しのみ
-    ├── controllers/mcp/          # MCPコントローラー (/mcp, /mcp/stream)
-    └── interceptors/             # SSEインターセプター
+│       ├── mcp.service.ts                # 単一エンドポイント用Facade
+│       ├── runtime-resolver.service.ts   # DB_TYPE -> runtime解決（分岐はここだけ）
+│       ├── shared/                       # runtime共通実装
+│       ├── rdbms/                        # RDBMS runtime/handlers/tools
+│       └── nosql/                        # NoSQL runtime/handlers/tools
+├── infrastructure/
+│   ├── config/               # AppConfigProvider (環境変数管理)
+│   ├── rdbms/adapters/       # RdbmsAdapterFactory + 各DBアダプター
+│   └── nosql/adapters/       # NoSqlAdapterFactory + MongoDbAdapter
+└── presentation/
+    └── mcp/                  # MCPコントローラー/SSEインターセプター (/mcp, /mcp/stream)
 ```
 
 ### MCPツールの実装パターン
@@ -59,11 +67,17 @@ src/
 - `execute(args)` でDB操作実行、`ToolResponse` 返却
 - エラーはcatchしてToolResponseのtextとして返す（throwしない）
 
-ツールの有効/無効は `ENABLED_TOOLS` 環境変数で制御。
+ツールの有効/無効は環境変数で制御。
+- RDBMS: `ENABLED_TOOLS`
+- NoSQL: `ENABLED_NOSQL_TOOLS`
 
 ### データベースアダプター
 
-Factory + Strategy パターン。`IDatabaseAdapter` インターフェースをDomain層で定義し、`SqlServerAdapter` / `PostgresAdapter` / `MysqlAdapter` がInfrastructure層で実装。新DBタイプ追加時はアダプターとStrategyを追加。
+Factory + Strategy パターン。
+- RDBMS: `RdbmsAdapterFactory` + `SqlServerAdapter` / `PostgresAdapter` / `MysqlAdapter`
+- NoSQL: `NoSqlAdapterFactory` + `MongoDbAdapter`
+
+新DBタイプ追加時は契約・アダプター・Factory戦略を追加する。
 
 ### MCPエンドポイント
 
