@@ -1,0 +1,63 @@
+{
+    "name": "database-remote-mcp",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nest build",
+        "build:watch": "nest build --watch",
+        "start": "node dist/main.js",
+        "start:dev": "nest start --watch",
+        "start:debug": "nest start --debug --watch",
+        "dev": "nest start --watch",
+        "test": "jest",
+        "test:coverage": "jest --coverage",
+        "test:watch": "jest --watch",
+        "lint": "eslint src/**/*.ts",
+        "lint:fix": "eslint src/**/*.ts --fix",
+        "lint:check": "eslint src/**/*.ts --max-warnings 0",
+        "format": "prettier --write .",
+        "format:check": "prettier --check ."
+    },
+    "dependencies": {
+        "@fastify/swagger": "^9.6.1",
+        "@fastify/swagger-ui": "^5.2.3",
+        "@modelcontextprotocol/sdk": "^1.22.0",
+        "@nestjs/common": "11",
+        "@nestjs/config": "4",
+        "@nestjs/core": "11",
+        "@nestjs/platform-fastify": "11",
+        "@nestjs/swagger": "11",
+        "fastify": "^5.6.2",
+        "mssql": "^11.0.1",
+        "reflect-metadata": "^0.1.13",
+        "rxjs": "^7.8.0",
+        "zod": "^3.23.8"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.1",
+        "@nestjs/cli": "^11.0.14",
+        "@nestjs/testing": "^11.1.9",
+        "@types/jest": "^30.0.0",
+        "@types/mssql": "^9.1.8",
+        "@types/node": "^20.12.12",
+        "@typescript-eslint/eslint-plugin": "^8.48.1",
+        "@typescript-eslint/parser": "^8.48.1",
+        "eslint": "^9.39.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-unused-imports": "^4.3.0",
+        "jest": "^30.2.0",
+        "prettier": "^3.6.2",
+        "ts-jest": "^29.4.6",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.4.0",
+        "typescript-eslint": "^8.48.1"
+    },
+    "engines": {
+        "node": ">=22"
+    },
+    "volta": {
+        "node": "22.21.1"
+    }
+}
