@@ -21,6 +21,19 @@ describe('AppConfigProvider', () => {
   }
 
   describe('getDefaultDatabaseConfig', () => {
+    it('DB_TYPE未指定時はpostgresをデフォルトとして使用する', () => {
+      const provider = createProvider({});
+
+      expect(provider.getDefaultDatabaseConfig()).toEqual({
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        database: 'postgres',
+        user: 'postgres',
+        password: '',
+      });
+    });
+
     it('DB_SSL=true をpostgres設定へ反映する', () => {
       const provider = createProvider({
         DB_TYPE: 'postgres',

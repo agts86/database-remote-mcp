@@ -27,7 +27,7 @@ export class AppConfigProvider {
   }
   /** デフォルトのデータベース接続設定を取得 */
   getDefaultDatabaseConfig(): DatabaseConnectionConfig {
-    const dbType = this.configService.get<string>('DB_TYPE', 'sqlserver');
+    const dbType = this.configService.get<string>('DB_TYPE', 'postgres');
 
     return DatabaseAdapterFactory.resolveConfig(dbType, {
       server: this.configService.get<string>('SERVER'),
