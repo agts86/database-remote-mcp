@@ -256,9 +256,9 @@ export class McpService {
         prompts: false,
       },
       endpoints: {
-        tools: '/mcp/tools',
-        listTools: '/mcp/tools',
-        invokeTool: '/mcp/tools/{toolName}',
+        tools: '/mcp/rdbms/tools',
+        listTools: '/mcp/rdbms/tools',
+        invokeTool: '/mcp/rdbms/tools/{toolName}',
       },
     };
   }

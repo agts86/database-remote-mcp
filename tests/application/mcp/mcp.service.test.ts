@@ -191,6 +191,19 @@ describe('McpService', () => {
     });
   });
 
+  describe('getMcpInfoResponse', () => {
+    it('RDBMS向けエンドポイント情報を返す', () => {
+      const info = service.getMcpInfoResponse();
+
+      expect(info).toHaveProperty('endpoints');
+      expect(info.endpoints).toEqual({
+        tools: '/mcp/rdbms/tools',
+        listTools: '/mcp/rdbms/tools',
+        invokeTool: '/mcp/rdbms/tools/{toolName}',
+      });
+    });
+  });
+
   describe('handleHttpMcpMessage', () => {
     it('initialize メッセージを正常に処理する', async () => {
       const message = { method: 'initialize', params: {} };

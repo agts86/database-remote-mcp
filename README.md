@@ -102,7 +102,7 @@ docker run -p 3000:3000 --env-file .env database-remote-mcp:latest
      "servers": {
        "database-remote-mcp": {
          "type": "http",
-         "url": "http://localhost:3000/mcp",
+         "url": "http://localhost:3000/mcp/rdbms",
          "tools": ["*"]
        }
      }
@@ -116,7 +116,7 @@ docker run -p 3000:3000 --env-file .env database-remote-mcp:latest
      "servers": {
        "database-remote-mcp": {
          "type": "http",
-         "url": "http://localhost:3000/mcp/stream",
+         "url": "http://localhost:3000/mcp/rdbms/stream",
          "tools": ["*"]
        }
      }
@@ -129,7 +129,7 @@ docker run -p 3000:3000 --env-file .env database-remote-mcp:latest
 
    ```toml
     [mcp_servers.database-remote-mcp]
-    url = "http://localhost:3000/mcp/stream"
+    url = "http://localhost:3000/mcp/rdbms/stream"
     enabled = true
    ```
 
@@ -138,7 +138,7 @@ docker run -p 3000:3000 --env-file .env database-remote-mcp:latest
    以下のコマンドを実行
 
    ```sh
-    claude mcp add --transport http database-remote-mcp http://localhost:3000/mcp/stream
+    claude mcp add --transport http database-remote-mcp http://localhost:3000/mcp/rdbms/stream
    ```
 
 3. MCP クライアントを再起動して MCP ツールを使用開始

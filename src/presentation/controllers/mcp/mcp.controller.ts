@@ -25,7 +25,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * Database ToolのHTTP APIコントローラー
  * ユーザーが指定したHTTPベース設定に対応し、データベースツールをHTTPエンドポイントで公開します
  */
-@Controller('mcp')
+@Controller('mcp/rdbms')
 export class McpController {
   private readonly logger = new Logger(McpController.name);
 
