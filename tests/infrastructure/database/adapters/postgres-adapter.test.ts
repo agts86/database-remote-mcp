@@ -35,6 +35,12 @@ function getMockPool(): {
   return pgMock._mockPool;
 }
 
+function getMockPoolConstructor(): jest.Mock {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const pgMock = require('pg');
+  return pgMock.default.Pool as jest.Mock;
+}
+
 describe('PostgresAdapter', () => {
   let adapter: PostgresAdapter;
   const testConfig: PostgresConnectionConfig = {
@@ -56,6 +62,24 @@ describe('PostgresAdapter', () => {
       const mockPool = getMockPool();
       await adapter.init();
       expect(mockPool.connect).toHaveBeenCalled();
+    });
+
+    it('ssl=trueの場合はTLS設定付きで初期化する', async () => {
+      const poolConstructor = getMockPoolConstructor();
+      const sslAdapter = new PostgresAdapter({
+        ...testConfig,
+        ssl: true,
+      });
+
+      await sslAdapter.init();
+
+      expect(poolConstructor).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }),
+      );
     });
 
     it('接続失敗時にエラーをスローする', async () => {

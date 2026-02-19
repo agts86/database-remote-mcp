@@ -22,6 +22,7 @@ export interface SqlServerConnectionConfig extends BaseConnectionConfig {
 export interface PostgresConnectionConfig extends BaseConnectionConfig {
   type: 'postgres';
   host: string;
+  ssl?: boolean;
 }
 
 /**

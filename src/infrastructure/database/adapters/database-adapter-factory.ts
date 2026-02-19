@@ -10,6 +10,7 @@ export interface RawDatabaseEnv {
   database?: string;
   user?: string;
   password?: string;
+  ssl?: boolean;
 }
 
 interface IAdapterCreationStrategy {
@@ -61,7 +62,7 @@ class PostgresCreationStrategy implements IAdapterCreationStrategy {
   }
 
   getDefaultConfig(env: RawDatabaseEnv): DatabaseConnectionConfig {
-    return {
+    const config: DatabaseConnectionConfig = {
       type: 'postgres',
       host: env.server ?? 'localhost',
       port: env.port ?? 5432,
@@ -69,6 +70,13 @@ class PostgresCreationStrategy implements IAdapterCreationStrategy {
       user: env.user ?? 'postgres',
       password: env.password ?? '',
     };
+    if (env.ssl !== undefined) {
+      return {
+        ...config,
+        ssl: env.ssl,
+      };
+    }
+    return config;
   }
 }
 

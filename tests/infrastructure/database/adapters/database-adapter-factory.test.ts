@@ -119,6 +119,21 @@ describe('DatabaseAdapterFactory', () => {
       });
     });
 
+    it('postgresでSSL設定を適用する', () => {
+      const config = DatabaseAdapterFactory.resolveConfig('postgres', {
+        ssl: true,
+      });
+      expect(config).toEqual({
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        database: 'postgres',
+        user: 'postgres',
+        password: '',
+        ssl: true,
+      });
+    });
+
     it('サポートされていないタイプでエラーをスローする', () => {
       expect(() =>
         DatabaseAdapterFactory.resolveConfig('unsupported', {}),

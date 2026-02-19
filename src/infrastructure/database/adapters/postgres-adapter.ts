@@ -29,6 +29,9 @@ export class PostgresAdapter implements IDatabaseAdapter {
       port: connectionConfig.port || 5432,
       user: connectionConfig.user,
       password: connectionConfig.password,
+      ...(connectionConfig.ssl
+        ? { ssl: { rejectUnauthorized: false } }
+        : {}),
     };
   }
 

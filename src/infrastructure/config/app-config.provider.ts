@@ -35,6 +35,7 @@ export class AppConfigProvider {
       database: this.configService.get<string>('DATABASE'),
       user: this.configService.get<string>('USER'),
       password: this.configService.get<string>('PASSWORD'),
+      ssl: this.getOptionalBoolean('DB_SSL'),
     });
   }
 
@@ -45,5 +46,28 @@ export class AppConfigProvider {
       return undefined;
     }
     return Number(value);
+  }
+
+  /** 環境変数を真偽値として取得（未設定時はundefined） */
+  private getOptionalBoolean(key: string): boolean | undefined {
+    const value = this.configService.get<string>(key);
+    if (value === undefined || value.trim() === '') {
+      return undefined;
+    }
+
+    const normalized = value.trim().toLowerCase();
+    const truthyValues = ['true', '1', 'yes', 'on'];
+    const falsyValues = ['false', '0', 'no', 'off'];
+
+    if (truthyValues.includes(normalized)) {
+      return true;
+    }
+    if (falsyValues.includes(normalized)) {
+      return false;
+    }
+
+    throw new Error(
+      `Invalid boolean value for ${key}: "${value}". Use true/false.`,
+    );
   }
 }
