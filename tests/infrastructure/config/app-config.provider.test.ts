@@ -60,6 +60,23 @@ describe('AppConfigProvider', () => {
       });
     });
 
+    it('DB_SSL=true をmysql設定へ反映する', () => {
+      const provider = createProvider({
+        DB_TYPE: 'mysql',
+        DB_SSL: 'true',
+      });
+
+      expect(provider.getDefaultDatabaseConfig()).toEqual({
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        database: 'mysql',
+        user: 'root',
+        password: '',
+        ssl: true,
+      });
+    });
+
     it('DB_SSLが不正値の場合はエラーを投げる', () => {
       const provider = createProvider({
         DB_TYPE: 'postgres',

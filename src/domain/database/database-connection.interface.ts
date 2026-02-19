@@ -31,6 +31,7 @@ export interface PostgresConnectionConfig extends BaseConnectionConfig {
 export interface MysqlConnectionConfig extends BaseConnectionConfig {
   type: 'mysql';
   host: string;
+  ssl?: boolean;
 }
 
 /**

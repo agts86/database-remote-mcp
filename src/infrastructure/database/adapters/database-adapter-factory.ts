@@ -96,7 +96,7 @@ class MysqlCreationStrategy implements IAdapterCreationStrategy {
   }
 
   getDefaultConfig(env: RawDatabaseEnv): DatabaseConnectionConfig {
-    return {
+    const config: DatabaseConnectionConfig = {
       type: 'mysql',
       host: env.server ?? 'localhost',
       port: env.port ?? 3306,
@@ -104,6 +104,13 @@ class MysqlCreationStrategy implements IAdapterCreationStrategy {
       user: env.user ?? 'root',
       password: env.password ?? '',
     };
+    if (env.ssl !== undefined) {
+      return {
+        ...config,
+        ssl: env.ssl,
+      };
+    }
+    return config;
   }
 }
 

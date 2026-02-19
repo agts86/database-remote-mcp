@@ -29,6 +29,9 @@ export class MysqlAdapter implements IDatabaseAdapter {
       port: connectionConfig.port || 3306,
       user: connectionConfig.user,
       password: connectionConfig.password,
+      ...(connectionConfig.ssl
+        ? { ssl: { rejectUnauthorized: false } }
+        : {}),
     };
   }
 

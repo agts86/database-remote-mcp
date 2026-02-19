@@ -35,6 +35,12 @@ function getMockPool(): {
   return mysqlMock._mockPool;
 }
 
+function getMockCreatePool(): jest.Mock {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const mysqlMock = require('mysql2/promise');
+  return mysqlMock.default.createPool as jest.Mock;
+}
+
 describe('MysqlAdapter', () => {
   let adapter: MysqlAdapter;
   const testConfig: MysqlConnectionConfig = {
@@ -56,6 +62,24 @@ describe('MysqlAdapter', () => {
       const mockPool = getMockPool();
       await adapter.init();
       expect(mockPool.getConnection).toHaveBeenCalled();
+    });
+
+    it('ssl=trueの場合はTLS設定付きで初期化する', async () => {
+      const createPool = getMockCreatePool();
+      const sslAdapter = new MysqlAdapter({
+        ...testConfig,
+        ssl: true,
+      });
+
+      await sslAdapter.init();
+
+      expect(createPool).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }),
+      );
     });
 
     it('接続失敗時にエラーをスローする', async () => {

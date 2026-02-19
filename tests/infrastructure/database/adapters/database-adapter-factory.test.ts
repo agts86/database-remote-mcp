@@ -134,6 +134,21 @@ describe('DatabaseAdapterFactory', () => {
       });
     });
 
+    it('mysqlでSSL設定を適用する', () => {
+      const config = DatabaseAdapterFactory.resolveConfig('mysql', {
+        ssl: true,
+      });
+      expect(config).toEqual({
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        database: 'mysql',
+        user: 'root',
+        password: '',
+        ssl: true,
+      });
+    });
+
     it('サポートされていないタイプでエラーをスローする', () => {
       expect(() =>
         DatabaseAdapterFactory.resolveConfig('unsupported', {}),
