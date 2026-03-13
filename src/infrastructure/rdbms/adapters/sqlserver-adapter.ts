@@ -79,9 +79,10 @@ export class SqlServerAdapter implements IDatabaseAdapter {
       });
 
       // Replace ? with named parameters
+      let paramIndex = 0;
       const preparedQuery = query.replace(
         /\?/g,
-        (_, index) => `@param${index}`,
+        () => `@param${paramIndex++}`,
       );
 
       const result = await request.query(preparedQuery);
@@ -115,9 +116,10 @@ export class SqlServerAdapter implements IDatabaseAdapter {
       });
 
       // Replace ? with named parameters
+      let paramIndex = 0;
       const preparedQuery = query.replace(
         /\?/g,
-        (_, index) => `@param${index}`,
+        () => `@param${paramIndex++}`,
       );
 
       let lastID = 0;
@@ -209,7 +211,7 @@ export class SqlServerAdapter implements IDatabaseAdapter {
    * @param tableName テーブル名
    * @returns テーブル説明クエリ（パラメータ化済み）
    */
-  getDescribeTableQuery(tableName: string): string {
+  getDescribeTableQuery(_tableName: string): string {
     // DECLARE + パラメータ化（DROP TABLEと同じアプローチ）
     return `
       DECLARE @tableName NVARCHAR(128) = ?;
