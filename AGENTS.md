@@ -36,12 +36,23 @@ pnpm format:check     # Prettier確認
 
 ## Architecture
 
-NestJS + Fastify + MCP SDK によるリモートDB（SQL Server / PostgreSQL / MySQL / MongoDB）アクセスMCPサーバー。
+NestJS + Fastify + MCP SDK によるリモートDB（SQL Server / PostgreSQL / MySQL / MongoDB）アクセスMCPサーバー。HTTP と stdio の両トランスポートに対応。
+
+### トランスポートモード
+
+`MCP_TRANSPORT` 環境変数で起動モードを切り替える。
+
+| `MCP_TRANSPORT` | モード | 使用モジュール |
+|---|---|---|
+| 未設定 / `http` | HTTP/SSE/Streamable HTTP | `AppModule` |
+| `stdio` | stdin/stdout MCP プロトコル | `AppStdioModule` |
 
 ### レイヤー構成（依存方向: Presentation → Application → Domain ← Infrastructure）
 
 ```
 src/
+├── app.module.ts         # HTTPモード用ルートモジュール
+├── app-stdio.module.ts   # stdioモード用ルートモジュール（Presentation層なし）
 ├── domain/           # 純粋なTS型・インターフェースのみ。外部依存禁止、NestJSデコレータ禁止
 │   ├── mcp/
 │   │   ├── shared/   # MCP共通のメッセージ/レスポンス/ツール定義
@@ -51,9 +62,9 @@ src/
 │   └── nosql/        # MCP非依存のNoSQL契約
 ├── application/
 │   └── mcp/
-│       ├── mcp.service.ts                # 単一エンドポイント用Facade
+│       ├── mcp.service.ts                # 単一エンドポイント用Facade（HTTPモード）
 │       ├── runtime-resolver.service.ts   # DB_TYPE -> runtime解決（分岐はここだけ）
-│       ├── shared/                       # runtime共通実装
+│       ├── shared/                       # runtime共通実装（connectStdio()含む）
 │       ├── rdbms/                        # RDBMS runtime/handlers/tools
 │       └── nosql/                        # NoSQL runtime/handlers/tools
 ├── infrastructure/
@@ -61,7 +72,7 @@ src/
 │   ├── rdbms/adapters/       # RdbmsAdapterFactory + 各DBアダプター
 │   └── nosql/adapters/       # NoSqlAdapterFactory + MongoDbAdapter
 └── presentation/
-    └── mcp/                  # MCPコントローラー/SSEインターセプター (/mcp, /mcp/stream)
+    └── mcp/                  # MCPコントローラー/SSEインターセプター（HTTPモードのみ）
 ```
 
 ### MCPツールの実装パターン
@@ -84,10 +95,16 @@ Factory + Strategy パターン。
 
 新DBタイプ追加時は契約・アダプター・Factory戦略を追加する。
 
-### MCPエンドポイント
+### MCPエンドポイント / トランスポート
 
+**HTTPモード（デフォルト）:**
 - `/mcp` — 標準HTTP MCP (JSON-RPC)
 - `/mcp/stream` — Streamable HTTP (MCP SDK StreamableHTTPServerTransport)
+
+**stdioモード（`MCP_TRANSPORT=stdio`）:**
+- HTTPサーバー不起動。stdin/stdout を MCP プロトコルで使用
+- `BaseMcpService.connectStdio()` が `StdioServerTransport` に接続
+- stdioモードでは NestJS ログを完全無効化（stdout 保護）
 
 ## Coding Conventions
 

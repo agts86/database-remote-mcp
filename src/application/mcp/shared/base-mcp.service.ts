@@ -371,6 +371,37 @@ export abstract class BaseMcpService implements IMcpRuntime {
     }
   }
 
+  async connectStdio(): Promise<void> {
+    const { StdioServerTransport } = await import(
+      '@modelcontextprotocol/sdk/server/stdio.js'
+    );
+    const server = this.createStreamableMcpServer();
+    const transport = new StdioServerTransport();
+
+    const cleanup = async (): Promise<void> => {
+      try {
+        await transport.close();
+      } catch {
+        // クリーンアップ失敗は握り潰す
+      }
+      try {
+        await server.close();
+      } catch {
+        // クリーンアップ失敗は握り潰す
+      }
+      process.exit(0);
+    };
+
+    process.on('SIGINT', () => {
+      void cleanup();
+    });
+    process.on('SIGTERM', () => {
+      void cleanup();
+    });
+
+    await server.connect(transport);
+  }
+
   private async closeStreamableContext(
     server: McpServer,
     transport: StreamableHTTPServerTransport,

@@ -54,6 +54,7 @@ src/infrastructure/
 
 - HTTP エンドポイントとインターセプターのみを持つ
 - Application サービス呼び出し以外の処理を持ち込まない
+- stdioモード時は使用しない（`AppStdioModule` が Presentation 層を除外する）
 
 ```text
 src/presentation/mcp/
@@ -61,6 +62,21 @@ src/presentation/mcp/
 ├── mcp.controller.module.ts
 └── sse.interceptor.ts
 ```
+
+### トランスポートモード
+
+`MCP_TRANSPORT` 環境変数でエントリーポイントの起動モードを制御する。
+
+| `MCP_TRANSPORT` | 動作 |
+|---|---|
+| 未設定 / `http` | NestJS Fastify HTTPサーバーを起動（`AppModule` 使用） |
+| `stdio` | stdin/stdout で MCP プロトコルを処理（`AppStdioModule` 使用）|
+
+- stdioモードでは NestJS ログを完全無効化（`logger: false`）してstdoutを保護する
+- stdioモードでは `BaseMcpService.connectStdio()` を呼び出し、`StdioServerTransport` に接続する
+- ルートモジュールの使い分け:
+  - `AppModule` — HTTPモード（Presentation層含む）
+  - `AppStdioModule` — stdioモード（`McpServiceModule` のみ）
 
 ## 2. 型定義の配置ルール
 
@@ -100,12 +116,23 @@ Runtime の責務:
 - Mongo 実装は `MongoDbAdapter`
 - 現状 NoSQL ツールは `list_collections` のみ
 
-## 5. エンドポイント
+## 5. エンドポイント / トランスポート
 
-- `/mcp` (JSON-RPC)
-- `/mcp/stream` (Streamable HTTP)
+### HTTPモード（デフォルト）
+
+- `/mcp` (JSON-RPC over HTTP POST、SSEはGETで検出)
+- `/mcp/stream` (Streamable HTTP / MCP SDK `StreamableHTTPServerTransport`)
 
 エンドポイントは単一のまま、`DB_TYPE` で runtime を切り替える。
+
+### stdioモード（`MCP_TRANSPORT=stdio`）
+
+HTTPサーバーは起動せず、stdin/stdout を MCP プロトコルで占有する。
+
+- MCP SDK `StdioServerTransport` を使用
+- ツール・ランタイムは HTTPモードと共通（`BaseMcpService.connectStdio()` 経由）
+- ログ出力は完全無効化（stdoutへの書き込みを防止）
+- SIGINT / SIGTERM でグレースフルシャットダウン
 
 ## 6. 命名とインポート
 
@@ -141,4 +168,6 @@ pnpm test
 - `DB_TYPE` 分岐が resolver 以外に漏れていないか
 - ツール定義と実装名が一致しているか
 - `.env.sample` と README の設定説明を同期したか
+- 新しいトランスポートモードを追加する場合は `AppStdioModule` / `AppModule` の両方で動作確認したか
+- stdioモードでは stdout に書き込む処理を追加していないか（`process.stderr.write` を使うこと）
 
