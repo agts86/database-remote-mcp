@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(pnpm:*)",
-      "Bash(git:*)"
+      "Bash(git:*)" ,
+      "Bash(docker:*)",
+      "Bash(docker compose:*)"
     ],
     "deny": []
   }

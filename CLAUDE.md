@@ -2,8 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-@docs/
-
 ## Language
 
 すべての回答・説明・コメントは日本語で行うこと。コードコメントも日本語を推奨。
