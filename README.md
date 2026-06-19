@@ -45,7 +45,7 @@ NoSQL は現在 `list_collections` のみ実装済みです。
 
 ## システム要件
 
-- Node.js >= 22
+- Node.js >= 24
 - pnpm 推奨
 
 ## 起動

@@ -43,7 +43,7 @@
         "@nestjs/testing": "^11.1.9",
         "@types/jest": "^30.0.0",
         "@types/mssql": "^9.1.8",
-        "@types/node": "^20.12.12",
+        "@types/node": "^24.0.0",
         "@types/pg": "^8.16.0",
         "@typescript-eslint/eslint-plugin": "^8.48.1",
         "@typescript-eslint/parser": "^8.48.1",
@@ -59,9 +59,9 @@
         "typescript-eslint": "^8.48.1"
     },
     "engines": {
-        "node": ">=22"
+        "node": ">=24"
     },
     "volta": {
-        "node": "22.21.1"
+        "node": "24.0.0"
     }
 }
